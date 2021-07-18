@@ -49,7 +49,7 @@ def train():
         
     epoch = 0
 
-    trainloader = DataLoader(dataset=SequenceDataset(channels=args.channels, size=args.size, frames_dir=args.frames_dir, time_steps=10), batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers)
+    trainloader = DataLoader(dataset=SequenceDataset(channels=args.channels, size=args.size, frames_dir=args.frames_dir, time_steps=args.time_steps), batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers)
 
     with torch.set_grad_enabled(True):
         for ep in range(args.epochs):

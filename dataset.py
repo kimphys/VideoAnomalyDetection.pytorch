@@ -9,7 +9,9 @@ import numpy as np
 import glob
 
 class SequenceDataset(Dataset):
-    def __init__(self, channels, size, frames_dir, time_steps):
+    def __init__(self, channels, size, frames_dir, time_steps, test=False):
+        self.test = test
+
         self.time_steps = time_steps
         self.frames_list = glob.glob(frames_dir + '/**/*.tif', recursive=True)
         self.frames_list.sort()
