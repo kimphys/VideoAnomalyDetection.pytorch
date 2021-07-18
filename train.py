@@ -18,11 +18,10 @@ class args():
     save_per_epoch = 5
     batch_size = 32 # "batch size for training/testing, default is 4"
     pretrained = False
-    lr_init = 1e-3
-    lr_momentum = 0.9
-    lr_weight_decay = 1e-4
+    lr_init = 1e-4
+    lr_weight_decay = 1e-5
     save_model_dir = "./weights/" #"path to folder where trained model with checkpoints will be saved."
-    workers = 1
+    num_workers = 1
 
     # Dataset setting
     channels = 3
@@ -35,7 +34,7 @@ class args():
 
 model = LSTMAutoEncoder(in_channels=args.channels, time_steps=args.time_steps)
 
-optimizer = torch.optim.Adam(model.parameters(), lr=args.lr_init, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
+optimizer = torch.optim.Adam(model.parameters(), lr=args.lr_init, betas=(0.9, 0.999), eps=1e-06, weight_decay=args.lr_weight_decay)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
 
 if torch.cuda.is_available() and args.gpu is not None:
@@ -48,7 +47,7 @@ else:
     
 epoch = 0
 
-trainloader = DataLoader(SequenceDataset(channels=args.channels, size=args.size, frames_dir=args.frames_dir, time_steps=10))
+trainloader = DataLoader(dataset=SequenceDataset(channels=args.channels, size=args.size, frames_dir=args.frames_dir, time_steps=10), batch_size=4, shuffle=False, num_workers=args.num_workers)
 
 with torch.set_grad_enabled(True):
     for ep in range(args.epochs):
