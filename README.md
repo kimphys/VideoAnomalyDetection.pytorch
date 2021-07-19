@@ -1,4 +1,4 @@
-# ConvLSTMAutoEncoder
+# Video Anomaly detection with PyTorch
 
 ## Introduction
 
