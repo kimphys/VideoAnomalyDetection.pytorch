@@ -17,9 +17,7 @@ class LSTMAutoEncoder(nn.Module):
             hidden_dim=[64],
             kernel_size=(3, 3),
             num_layers=1,
-            batch_first=True,
             bias=True,
-            return_all_layers=False
         )
 
         self.lstm_2 = ConvLSTM(
@@ -27,9 +25,7 @@ class LSTMAutoEncoder(nn.Module):
             hidden_dim=[32],
             kernel_size=(3, 3),
             num_layers=1,
-            batch_first=True,
             bias=True,
-            return_all_layers=False
         )
 
         self.lstm_3 = ConvLSTM(
@@ -37,9 +33,7 @@ class LSTMAutoEncoder(nn.Module):
             hidden_dim=[64],
             kernel_size=(3, 3),
             num_layers=1,
-            batch_first=True,
             bias=True,
-            return_all_layers=False
         )
 
         ## Decoder ##
@@ -54,12 +48,9 @@ class LSTMAutoEncoder(nn.Module):
         x = self.conv_2(x)
         x = nn.LayerNorm(x.size()[1:], elementwise_affine=False)(x)
 
-        x, _ = self.lstm_1(x)
-        x = x[0]
-        x, _ = self.lstm_2(x)
-        x = x[0]
-        x, _ = self.lstm_3(x)
-        x = x[0]
+        x = self.lstm_1(x)
+        x = self.lstm_2(x)
+        x = self.lstm_3(x)
 
         x = self.deconv_1(x)
         x = nn.LayerNorm(x.size()[1:], elementwise_affine=False)(x)
