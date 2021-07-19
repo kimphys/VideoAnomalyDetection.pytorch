@@ -1,4 +1,4 @@
-# Video Anomaly detection with PyTorch
+# Video anomaly detection with PyTorch
 
 ## Introduction
 
