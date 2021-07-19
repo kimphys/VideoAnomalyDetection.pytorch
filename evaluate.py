@@ -1,6 +1,3 @@
-import os
-import sys
-
 import torch
 from torch.utils.data import DataLoader
 
@@ -44,10 +41,11 @@ def evaluate():
 
     gts = []
     preds = []
+    regularity_score = []
 
     with torch.set_grad_enabled(False):
         pbar = tqdm(testloader)
-        regularity_score = []
+        
         for i, seqs in enumerate(pbar):
             model.eval()
 
@@ -65,12 +63,17 @@ def evaluate():
             gts.append(seqs)
             preds.append(outs)
 
-    seqs_reconstruction_cost = np.array([np.linalg.norm(np.subtract(gts[i],preds[i])) for i in range(0,len(pbar))])
-    sa = (seqs_reconstruction_cost - np.min(seqs_reconstruction_cost)) / np.max(seqs_reconstruction_cost)
-    sr = 1 - sa
+            seqs_reconstruction_cost = np.array([np.linalg.norm(np.subtract(gts[j],preds[j])) for j in range(0,i+1)])      
+            sa = (seqs_reconstruction_cost - np.min(seqs_reconstruction_cost)) / np.max(seqs_reconstruction_cost)
+            sr = 1 - sa
+
+            if i == 0:
+                regularity_score.extend(sr)
+            else:
+                regularity_score.append(sr[-1])
 
     f = open('result.csv','w')
-    for i, score in enumerate(sr):
+    for i, score in enumerate(regularity_score):
         vstr = str(i) + ',' + str(score) + '\n'
         f.write(vstr)
     f.close()
