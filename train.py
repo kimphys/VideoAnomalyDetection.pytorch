@@ -26,7 +26,7 @@ class args():
     # Dataset setting
     channels = 3
     size = 256
-    frames_dir = 'D:\\project\\convlstm\\UCSD_Anomaly_Dataset\\UCSD_Anomaly_Dataset.v1p2\\UCSDped1\\Train\\210716'
+    frames_dir = 'datasets/train'
     time_steps = 10
 
     # For GPU training

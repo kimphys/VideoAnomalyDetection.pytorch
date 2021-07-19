@@ -1,7 +1,3 @@
-'''
-Inspired by https://towardsdatascience.com/prototyping-an-anomaly-detection-system-for-videos-step-by-step-using-lstm-convolutional-4e06b7dcdd29
-'''
-
 import torch
 import torch.nn as nn
 import numpy as np

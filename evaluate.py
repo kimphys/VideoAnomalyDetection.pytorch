@@ -40,7 +40,10 @@ def evaluate():
         use_cuda = False
         print('using CPU, this will be slow')
 
-    testloader = DataLoader(dataset=SequenceDataset(channels=args.channels, size=args.size, frames_dir=args.frames_dir, time_steps=args.time_steps), batch_size=1, shuffle=False, num_workers=args.num_workers)
+    testloader = DataLoader(dataset=SequenceDataset(channels=args.channels, size=args.size, frames_dir=args.frames_dir, time_steps=args.time_steps), batch_size=1, shuffle=False, num_workers=0)
+
+    gts = []
+    preds = []
 
     with torch.set_grad_enabled(False):
         pbar = tqdm(testloader)
@@ -59,17 +62,15 @@ def evaluate():
                 seqs = seqs[0].numpy()
                 outs = seqs[0].numpy()
 
-            seqs_reconstruction_cost = np.array([np.linalg.norm(np.subtract(seqs[j],outs[j])) for j in range(0,args.time_steps)])
-            sa = (seqs_reconstruction_cost - np.min(seqs_reconstruction_cost)) / np.max(seqs_reconstruction_cost)
-            sr = 1 - sa
+            gts.append(seqs)
+            preds.append(outs)
 
-            if i == 0:
-                regularity_score.extend(sr)
-            else:
-                regularity_score.extend(sr[-1])
+    seqs_reconstruction_cost = np.array([np.linalg.norm(np.subtract(gts[i],preds[i])) for i in range(0,len(pbar))])
+    sa = (seqs_reconstruction_cost - np.min(seqs_reconstruction_cost)) / np.max(seqs_reconstruction_cost)
+    sr = 1 - sa
 
     f = open('result.csv','w')
-    for i, score in enumerate(regularity_score):
+    for i, score in enumerate(sr):
         vstr = str(i) + ',' + str(score) + '\n'
         f.write(vstr)
     f.close()
