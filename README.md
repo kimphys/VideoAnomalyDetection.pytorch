@@ -44,7 +44,7 @@ python evaluate.py
 * Then, you can get regularity scores at each frame.
 
 ## Notes
-* For convolutional LSTM with time-distributed convolutions, I refered to great works below
-[PyTorch Forum](https://discuss.pytorch.org/t/timedistributed-cnn/51707/2)
+* For convolutional LSTM with time-distributed convolutions, I refered to great works such
+[PyTorch Forum](https://discuss.pytorch.org/t/timedistributed-cnn/51707/2) and 
 [ndrplz's work](https://github.com/ndrplz/ConvLSTM_pytorch)
 * You can see same results with Keras in [here](https://github.com/hashemsellat/Video-Anomaly-Detection)
