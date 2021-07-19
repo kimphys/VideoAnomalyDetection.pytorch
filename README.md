@@ -6,7 +6,7 @@ This is a PyTorch implementation of an anomaly detection in video using Convolut
 * Mahmudul Hasan, Jonghyun Choi, Jan Neumann, Amit K. Roy-Chowdhury, Learning Temporal Regularity in Video Sequences (2016), arXiv:1604.04574.
 * Yong Shean Chong, Abnormal Event Detection in Videos using Spatiotemporal Autoencoder (2017), arXiv:1701.01546.
 
-| <img src="results/Test001.gif" width="40%"> | <img src="results/Test001.png" width="40%"> |
+| <img src="results/Test001.gif" width=400> | <img src="results/Test001.png" width=400> |
 |---|---|
 | Input image | result |
 
