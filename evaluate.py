@@ -1,8 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
 
-import torchvision
-
 from model import LSTMAutoEncoder
 from dataset import SequenceDataset
 
@@ -16,7 +14,7 @@ class args():
     checkpoint = 'weights/ckpt_100.pt'
 
     # Dataset setting
-    channels = 3
+    channels = 1
     size = 256
     frames_dir = 'datasets/Test001'
     time_steps = 10
@@ -46,8 +44,7 @@ def evaluate():
     regularity_score = []
 
     with torch.set_grad_enabled(False):
-        # pbar = tqdm(testloader)
-        pbar = testloader
+        pbar = tqdm(testloader)
         
         for i, seqs in enumerate(pbar):
             model.eval()

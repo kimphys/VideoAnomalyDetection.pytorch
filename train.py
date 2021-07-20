@@ -15,7 +15,7 @@ class args():
     # training args
     epochs = 100 # "number of training epochs, default is 2"
     save_per_epoch = 5
-    batch_size = 4 # "batch size for training/testing, default is 4"
+    batch_size = 2 # "batch size for training/testing, default is 4"
     pretrained = False
     lr_init = 1e-4
     lr_weight_decay = 1e-5
@@ -23,9 +23,9 @@ class args():
     num_workers = 1
 
     # Dataset setting
-    channels = 3
+    channels = 1
     size = 256
-    frames_dir = 'datasets/train'
+    frames_dir = './datasets/train'
     time_steps = 10
 
     # For GPU training
@@ -45,8 +45,6 @@ def train():
     else:
         use_cuda = False
         print('using CPU, this will be slow')
-        
-    epoch = 0
 
     trainloader = DataLoader(dataset=SequenceDataset(channels=args.channels, size=args.size, frames_dir=args.frames_dir, time_steps=args.time_steps), batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers)
 
@@ -54,7 +52,6 @@ def train():
         for ep in range(args.epochs):
 
             pbar = tqdm(trainloader)
-            idx = 0
 
             loss_sum = 0
 
