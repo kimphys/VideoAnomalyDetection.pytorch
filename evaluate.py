@@ -1,6 +1,8 @@
 import torch
 from torch.utils.data import DataLoader
 
+import torchvision
+
 from model import LSTMAutoEncoder
 from dataset import SequenceDataset
 
@@ -44,7 +46,8 @@ def evaluate():
     regularity_score = []
 
     with torch.set_grad_enabled(False):
-        pbar = tqdm(testloader)
+        # pbar = tqdm(testloader)
+        pbar = testloader
         
         for i, seqs in enumerate(pbar):
             model.eval()
@@ -54,14 +57,18 @@ def evaluate():
             outs = model(seqs)
 
             if use_cuda:
-                seqs = seqs[0].detach().cpu().numpy()
-                outs = outs[0].detach().cpu().numpy()
+                seqs = seqs[0].detach().cpu()
+                outs = outs[0].detach().cpu()
             else:
-                seqs = seqs[0].numpy()
-                outs = seqs[0].numpy()
+                seqs = seqs[0]
+                outs = seqs[0]
 
-            gts.append(seqs)
-            preds.append(outs)
+            
+            # distance = (seqs - outs) * (seqs - outs)
+            # distance = distance / torch.max(distance) * 255
+
+            gts.append(seqs.numpy())
+            preds.append(outs.numpy())
 
             seqs_reconstruction_cost = np.array([np.linalg.norm(np.subtract(gts[j],preds[j])) for j in range(0,i+1)])      
             sa = (seqs_reconstruction_cost - np.min(seqs_reconstruction_cost)) / np.max(seqs_reconstruction_cost)
