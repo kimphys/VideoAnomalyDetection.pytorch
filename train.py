@@ -13,19 +13,19 @@ from tqdm import tqdm
 class args():
     
     # training args
-    epochs = 100 # "number of training epochs, default is 2"
+    epochs = 150 # "number of training epochs, default is 2"
     save_per_epoch = 5
-    batch_size = 2 # "batch size for training/testing, default is 4"
+    batch_size = 6 # "batch size for training/testing, default is 4"
     pretrained = False
     lr_init = 1e-4
     lr_weight_decay = 1e-5
     save_model_dir = "./weights/" #"path to folder where trained model with checkpoints will be saved."
-    num_workers = 1
+    num_workers = 0
 
     # Dataset setting
-    channels = 1
-    size = 256
-    frames_dir = './datasets/train'
+    channels = 3
+    size = 200
+    frames_dir = './datasets/train/'
     time_steps = 10
 
     # For GPU training
@@ -55,7 +55,9 @@ def train():
 
             loss_sum = 0
 
-            for i, seqs in enumerate(pbar):
+            for i, datas in enumerate(pbar):
+
+                seqs, _ = datas[0], datas[1]
 
                 model.train()
                     

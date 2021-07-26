@@ -8,19 +8,45 @@ from tqdm import tqdm
 
 import numpy as np
 
+import imageio
+
+from scipy import signal
+
 class args():
     
     # Model setting
-    checkpoint = 'weights/ckpt_100.pt'
+    checkpoint = 'weights/ckpt_25.pt'
 
     # Dataset setting
-    channels = 1
+    channels = 3
     size = 256
     frames_dir = 'datasets/Test001'
     time_steps = 10
 
     # For GPU training
     gpu = 0 # None
+
+def get_anomalies(i, o_seqs, seqs, outs, thres=245):
+
+    distance = np.abs(seqs[:,0,:,:].numpy() - outs[:,0,:,:].numpy())
+    dst_max = np.max(distance, axis=0)
+    dst_min = np.min(distance, axis=0)
+    
+    regularity = dst_max - dst_min
+    H = signal.convolve2d(regularity[:,:], np.ones((4,4)), mode='same')
+
+    H = (H - np.min(H)) / (np.max(H) - np.min(H)) * 255
+    H[H > thres] = 255
+    H[H <= thres] = 0
+    
+    target = o_seqs[0][-1].permute(1,2,0).numpy().astype('uint8')
+
+    target[H > thres,0] = 0
+    target[H > thres,1] = 255
+    target[H > thres,2] = 0
+
+    return target
+
 
 def evaluate():
 
@@ -42,11 +68,15 @@ def evaluate():
     gts = []
     preds = []
     regularity_score = []
+    anomalies = []
 
     with torch.set_grad_enabled(False):
         pbar = tqdm(testloader)
         
-        for i, seqs in enumerate(pbar):
+        for i, datas in enumerate(pbar):
+
+            seqs, o_seqs = datas[0], datas[1]
+
             model.eval()
 
             if use_cuda: seqs = seqs.cuda()
@@ -58,16 +88,14 @@ def evaluate():
                 outs = outs[0].detach().cpu()
             else:
                 seqs = seqs[0]
-                outs = seqs[0]
-
-            
-            # distance = (seqs - outs) * (seqs - outs)
-            # distance = distance / torch.max(distance) * 255
+                outs = outs[0]
 
             gts.append(seqs.numpy())
             preds.append(outs.numpy())
 
-            seqs_reconstruction_cost = np.array([np.linalg.norm(np.subtract(gts[j],preds[j])) for j in range(0,i+1)])      
+            anomalies.append(get_anomalies(i, o_seqs, seqs, outs, thres=245))
+
+            seqs_reconstruction_cost = np.array([np.linalg.norm(np.subtract(gts[j],preds[j])) for j in range(0,i+1)])
             sa = (seqs_reconstruction_cost - np.min(seqs_reconstruction_cost)) / np.max(seqs_reconstruction_cost)
             sr = 1 - sa
 
@@ -75,6 +103,8 @@ def evaluate():
                 regularity_score.extend(sr)
             else:
                 regularity_score.append(sr[-1])
+
+    imageio.mimsave('result.gif', anomalies, fps=15) 
 
     f = open('result.csv','w')
     for i, score in enumerate(regularity_score):

@@ -23,17 +23,18 @@ class SequenceDataset(Dataset):
     def __getitem__(self, index):
 
         if self.channels == 1:
-            seqs = [cv2.imread(frame, cv2.IMREAD_GRAYSCALE).astype(np.float32) for frame in self.frames_list[index:index + self.time_steps]]
+            imgs = [cv2.imread(frame, cv2.IMREAD_GRAYSCALE).astype(np.float32) for frame in self.frames_list[index:index + self.time_steps]]
         else: 
-            seqs = [cv2.imread(frame, cv2.IMREAD_COLOR).astype(np.float32) for frame in self.frames_list[index:index + self.time_steps]]
+            imgs = [cv2.imread(frame, cv2.IMREAD_COLOR).astype(np.float32) for frame in self.frames_list[index:index + self.time_steps]]
         
-        seqs = [self.simple_transform(img, self.size) for img in seqs]
+        o_seqs = [self.simple_transform(img, self.size) for img in imgs]
+        seqs = [self.base_transform(img, self.size) for img in imgs]
 
         seqs = torch.stack(seqs)
 
-        return seqs
+        return seqs, o_seqs
 
-    def simple_transform(self, img, size, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
+    def base_transform(self, o_img, size, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
 
         if self.channels == 1:
             transform = A.Compose([
@@ -60,7 +61,30 @@ class SequenceDataset(Dataset):
                                     ToTensorV2(p=1.0)
                                 ], p=1.0)
 
-        img = transform(image=img)['image']
+        img = transform(image=o_img)['image']
+
+        return img
+
+    def simple_transform(self, o_img, size, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
+    
+        if self.channels == 1:
+            transform = A.Compose([
+                                    A.Resize(height=size, 
+                                            width=size, 
+                                            always_apply=True, 
+                                            p=1.0),
+                                    ToTensorV2(p=1.0)
+                                ], p=1.0)
+        else:
+            transform = A.Compose([
+                                    A.Resize(height=size, 
+                                            width=size, 
+                                            always_apply=True, 
+                                            p=1.0),
+                                    ToTensorV2(p=1.0)
+                                ], p=1.0)
+
+        img = transform(image=o_img)['image']
 
         return img
 
