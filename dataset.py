@@ -37,29 +37,23 @@ class SequenceDataset(Dataset):
     def base_transform(self, o_img, size, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]):
 
         if self.channels == 1:
-            transform = A.Compose([
-                                    A.Resize(height=size, 
-                                            width=size, 
-                                            always_apply=True, 
-                                            p=1.0),
-                                    A.Normalize(mean=0.5,
-                                                std=0.5,
-                                                max_pixel_value=255.0,
-                                                p=1.0),
-                                    ToTensorV2(p=1.0)
-                                ], p=1.0)
+            mean = 0.5
+            std = 0.5
         else:
-            transform = A.Compose([
-                                    A.Resize(height=size, 
-                                            width=size, 
-                                            always_apply=True, 
+            mean=[0.485, 0.456, 0.406]
+            std=[0.229, 0.224, 0.225]
+
+        transform = A.Compose([
+                                A.Resize(height=size, 
+                                        width=size, 
+                                        always_apply=True, 
+                                        p=1.0),
+                                A.Normalize(mean=mean,
+                                            std=std,
+                                            max_pixel_value=255.0,
                                             p=1.0),
-                                    A.Normalize(mean=mean,
-                                                std=std,
-                                                max_pixel_value=255.0,
-                                                p=1.0),
-                                    ToTensorV2(p=1.0)
-                                ], p=1.0)
+                                ToTensorV2(p=1.0)
+                            ], p=1.0)
 
         img = transform(image=o_img)['image']
 
@@ -67,22 +61,13 @@ class SequenceDataset(Dataset):
 
     def simple_transform(self, o_img, size, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]):
     
-        if self.channels == 1:
-            transform = A.Compose([
-                                    A.Resize(height=size, 
-                                            width=size, 
-                                            always_apply=True, 
-                                            p=1.0),
-                                    ToTensorV2(p=1.0)
-                                ], p=1.0)
-        else:
-            transform = A.Compose([
-                                    A.Resize(height=size, 
-                                            width=size, 
-                                            always_apply=True, 
-                                            p=1.0),
-                                    ToTensorV2(p=1.0)
-                                ], p=1.0)
+        transform = A.Compose([
+                                A.Resize(height=size, 
+                                        width=size, 
+                                        always_apply=True, 
+                                        p=1.0),
+                                ToTensorV2(p=1.0)
+                            ], p=1.0)
 
         img = transform(image=o_img)['image']
 
