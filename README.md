@@ -15,7 +15,6 @@ This is a PyTorch implementation of an anomaly detection in video using Convolut
 * tqdm
 * Albumentations
 * NumPy
-* imageio
 
 ## How to train
 

@@ -25,8 +25,8 @@ class args():
     # Dataset setting
     channels = 3
     size = 200
-    frames_dir = './datasets/train/'
-    time_steps = 10
+    frames_dir = './datasets/train'
+    time_steps = 5
 
     # For GPU training
     gpu = 0 # None

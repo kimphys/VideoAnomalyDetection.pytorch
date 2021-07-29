@@ -34,7 +34,7 @@ class SequenceDataset(Dataset):
 
         return seqs, o_seqs
 
-    def base_transform(self, o_img, size, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
+    def base_transform(self, o_img, size, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]):
 
         if self.channels == 1:
             transform = A.Compose([
@@ -65,7 +65,7 @@ class SequenceDataset(Dataset):
 
         return img
 
-    def simple_transform(self, o_img, size, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
+    def simple_transform(self, o_img, size, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]):
     
         if self.channels == 1:
             transform = A.Compose([
