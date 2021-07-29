@@ -36,13 +36,6 @@ class SequenceDataset(Dataset):
 
     def base_transform(self, o_img, size, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]):
 
-        if self.channels == 1:
-            mean = 0.5
-            std = 0.5
-        else:
-            mean=[0.485, 0.456, 0.406]
-            std=[0.229, 0.224, 0.225]
-
         transform = A.Compose([
                                 A.Resize(height=size, 
                                         width=size, 
